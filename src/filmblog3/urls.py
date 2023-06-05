@@ -20,9 +20,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from users_api import router as users_api_router
+from films_api import router as films_api_router
 
 api_url_patterns = [
-    path(r'accounts/', include(users_api_router.router.urls)),
+    path('', include(users_api_router.router.urls)),
+    path('', include(films_api_router.router.urls)),
     path('auth/', include('rest_framework.urls')),
 ]
 
