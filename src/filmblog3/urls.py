@@ -19,6 +19,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from users_api import router as users_api_router
+
+api_url_patterns = [
+    path(r'users/', include(users_api_router.router.urls)),
+]
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(api_url_patterns)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
