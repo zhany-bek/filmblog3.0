@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 from users_api import router as users_api_router
 
 api_url_patterns = [
-    path(r'users/', include(users_api_router.router.urls)),
+    path(r'accounts/', include(users_api_router.router.urls)),
+    path('auth/', include('rest_framework.urls')),
 ]
 
 urlpatterns = [
