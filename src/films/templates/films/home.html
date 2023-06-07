@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Film Search{% endblock %}
+{% block css %}{% static "films/style.css" %}{% endblock %}
+{% block js %}{% static "films/index.js" %}{% endblock %}
+
+{% block body %}
+    <div id="search-container">
+        <form id="search" method="POST" action="{% url 'home' %}">
+            {% csrf_token %}
+            <label for="title">Film Search by Title</label>
+            <br>
+            <input type="text" id="title" name="title" class="text" required>
+            <br>
+            <button type="submit">Search</button>
+        </form>
+        <div id="search-results"></div>
+    </div>
+
+    <div>
+        {% for url in urls %}
+            <h1>{{url}}</h1>
+        {% endfor %}
+    </div>
+{% endblock %}
