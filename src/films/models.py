@@ -29,8 +29,9 @@ class Film(models.Model):
 @receiver(post_delete, sender=Film)
 def delete_poster_directory(sender, instance, **kwargs):
     # Construct the path to the directory containing the poster
-    directory_path = os.path.dirname(instance.poster.path)
+    if instance.poster:
+        directory_path = os.path.dirname(instance.poster.path)
 
     # Delete the specific film's directory and its contents
-    if os.path.exists(directory_path):
-        shutil.rmtree(directory_path)
+        if os.path.exists(directory_path):
+            shutil.rmtree(directory_path)
