@@ -93,9 +93,16 @@ def index(request):
             film.poster.save('poster.jpg', ContentFile(poster_content), save=True)
         film.save()
         adj_title = film.title
-        adj_title = adj_title.replace('_', ' ').capitalize()
+        adj_title_split = adj_title.split('_')
+        cap_title = []
+        ignore = ['a', 'an', 'the', 'in', 'on', 'at', 'of', 'to', 'for', 'with']
+        for i, word in enumerate(adj_title_split):
+            if i == 0 or word.lower() not in ignore:
+                word = word.capitalize()
+            cap_title.append(word)
+        cap_title_str = ' '.join(cap_title)
         return render(request, "films/home.html", {
-            "title": film.title,
+            "title": cap_title_str,
             "director": film.director_name,
             "release_year": film.release_year,
             "poster": film.poster
