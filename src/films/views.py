@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from bs4 import BeautifulSoup
-from django.core.files.base import ContentFile
+from django.core.files import File
 
 import requests
 import os, io
@@ -87,10 +87,17 @@ def index(request):
         )
 
         if created:
-            response = requests.get(poster)
-            poster_content = response.content
+            response = requests.get(poster, headers=headers)
+            poster_resp = response.content
+            img_soup = BeautifulSoup(poster_resp, 'html.parser')
+            poster_content = img_soup.find('meta', attrs={'property': 'og:image'})["content"]
+            poster_response = requests.get(poster_content, headers=headers)
+            with open("poster.jpg", "wb") as f:
+                f.write(poster_response.content)
+            with open("poster.jpg", "rb") as f:
+                # Create a Django File object from the file
+                film.poster.save("poster.jpg", File(f), save=True)
 
-            film.poster.save('poster.jpg', ContentFile(poster_content), save=True)
         film.save()
         adj_title = film.title
         adj_title_split = adj_title.split('_')
@@ -105,7 +112,7 @@ def index(request):
             "title": cap_title_str,
             "director": film.director_name,
             "release_year": film.release_year,
-            "poster": film.poster
+            "poster": film.poster.url
         })
     
     return render(request, 'films/home.html')
