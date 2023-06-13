@@ -49,8 +49,9 @@ def index(request):
 
         # Find the first search result
         search_result = soup.find('ul', class_='ipc-metadata-list')
-        if search_result is None:
-            error_message = search_result
+        result_type = soup.find('h3', class_='ipc-title__text').text
+        if search_result is None or result_type != 'Titles':
+            error_message = "No such films, sorry :("
             return render(request, 'films/home.html', {'error_message': error_message})
 
         # Extract the film's URL and release year from the search result
@@ -74,7 +75,7 @@ def index(request):
         poster = film_soup.find('a', class_='ipc-lockup-overlay ipc-focusable')['href']
         poster = 'https://www.imdb.com/' + poster
         rating = float(film_soup.find('span', class_='sc-bde20123-1 iZlgcd').text)
-        description = film_soup.find('span', attrs={'data-testid': 'plot-l', 'class': 'sc-2eb29e65-1 goRLhJ'}).text.strip()
+        description = film_soup.find('span', attrs={'data-testid': 'plot-l', 'class': 'sc-cd57914c-1 lgQWkv'}).text.strip()
 
         film, created = Film.objects.get_or_create(
             title=adjusted_title,
